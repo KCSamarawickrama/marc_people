@@ -23,6 +23,9 @@ const frontmatterSchema = z
     // and other forms of the name used in publication author lists (e.g. "Ratnayake, A.").
     otherEmails: z.array(z.string().email()).optional(),
     otherNames: z.array(z.string().trim().min(1)).optional(),
+    // Past members stay on the website under "Past members", still linked to their projects and papers.
+    status: z.enum(["current", "past"]).optional(),
+    currentPosition: z.string().trim().min(1).optional(),
   })
   .strict();
 
@@ -86,6 +89,10 @@ for (const fileName of markdownFiles) {
   }
 
   const data = result.data;
+
+  if (data.currentPosition && data.status !== "past") {
+    failures.push(`${fileName}: currentPosition is only shown for past members (status: past)`);
+  }
 
   // Every address, primary or other, may belong to one profile only.
   for (const email of [data.email, ...(data.otherEmails ?? [])]) {
