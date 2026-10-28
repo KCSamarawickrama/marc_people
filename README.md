@@ -14,9 +14,11 @@ Everyone at MARC keeps their own profile up to date. You can do it entirely in t
 4. Click **Commit changes…** (or **Propose changes**), then **Create pull request**.
 5. When a MARC maintainer merges the pull request, the website rebuilds and your changes go live.
 
+**On a project?** Your profile does not list your projects; each project file lists its team. Add your `email` (copied from your profile) under `projectMembers` or `supervisors` in each project's file in [marc_projects/projects](https://github.com/pdnMARC/marc_projects/tree/main/projects), and open a pull request there too. The two pull requests can be merged in either order. Guide: [Add yourself to your projects](https://pdnmarc.github.io/docs/profiles/#add-yourself-to-your-projects).
+
 To change your photo, first upload the new image to [`profiles/photos/`](profiles/photos/) (**Add file → Upload files**), then point `photo:` at it, for example `photo: ./photos/jane_doe.jpg`.
 
-Please don't change your `email` unless you have to: it is what links you to your projects and publications.
+Your `email` and `name` link you to your projects and publications. To replace one, move the old value to `otherEmails` / `otherNames` instead of deleting it (see **Linking keys** below).
 
 New to MARC? Follow **Option A** below to add a new profile.
 
@@ -33,17 +35,30 @@ marc_people/
 
 Markdown files outside `profiles/` are not picked up by the website, and the validator reports them.
 
-## :key: Linking keys: keep these exactly the same
+## :key: Linking keys: how a profile connects to projects and publications
 
-Two fields connect a profile to the rest of the website. Everything else (`post`, `photo`, biography) is safe to change at any time.
+These fields connect a profile to the rest of the website. Everything else (`post`, `photo`, biography) is safe to change at any time.
 
 | Field | Linked from | Purpose |
 |---|---|---|
-| `email` | `projectMembers` / `supervisors` in [marc_projects](https://github.com/pdnMARC/marc_projects) | Your unique identifier. Projects list their team by email, matched letter for letter, so write it in lower case and copy it rather than retyping it. Never shown on the website. |
-| `name` | `Authors` column of the MARC Publications sheet | Papers whose author list contains this full name appear on your profile. Keep it as it is written in your papers. |
+| `email` | `projectMembers` / `supervisors` in [marc_projects](https://github.com/pdnMARC/marc_projects) | Your main address and unique identifier. Never shown on the website. |
+| `otherEmails` (optional list) | The same project lists | Any other address a project may use for you: student, old or personal. |
+| `name` | `Authors` column of the MARC Publications sheet | Your display name, and the first form used to find your papers. |
+| `otherNames` (optional list) | The same Authors column | Other forms of your name in author lists, e.g. `"Ratnayake, A."` or `"R. M. A. Ratnayake"`. At least two words each; quote forms that contain a comma. |
 
-- **Changing your email:** update your profile *and* every project that lists the old address, and merge both together. Otherwise you drop off those project pages.
-- **Changing your name:** papers listed under the old form of your name stop appearing on your profile.
+```yaml
+email: jane.doe@eng.pdn.ac.lk
+otherEmails:
+  - e19999@eng.pdn.ac.lk
+name: Jane Doe
+otherNames:
+  - "Doe, J."
+  - "J. A. Doe"
+```
+
+- Matching ignores upper and lower case, and for names also full stops and spacing (`J.A. Doe` = `J. A. Doe`).
+- **Changing your email or name:** put the new value in `email` / `name` and move the old one to `otherEmails` / `otherNames`. Projects and papers that use the old one keep linking to you, with no other file to edit.
+- An address or a name form may belong to one profile only; the validator reports clashes. Make name forms specific enough not to match a colleague.
 - **The file name** is your page address (`Jane_Doe.md` → `/people/jane_doe/`). Renaming it breaks links shared elsewhere.
 
 Full guide: [pdnmarc.github.io/docs/profiles](https://pdnmarc.github.io/docs/profiles/)
@@ -158,6 +173,8 @@ The website currently validates each person entry with these fields:
 - `post`: your role
 - `name`: your display name
 - `photo`: optional image path
+- `otherEmails`: optional list of other email addresses, used to match project teams
+- `otherNames`: optional list of other forms of your name, used to match publication authors
 
 The website also renders your Markdown content as the biography on your profile page.
 
@@ -298,8 +315,10 @@ Required fields:
 - `post`
 - `name`
 
-Optional field:
+Optional fields:
 - `photo`
+- `otherEmails`
+- `otherNames`
 
 Example:
 
