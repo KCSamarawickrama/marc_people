@@ -4,11 +4,55 @@
 
 If your pull request is merged here, the website workflow will clone this repository into the website build, and your profile can appear on the live site.
 
+## :pencil2: Quick start: update your own profile
+
+Everyone at MARC keeps their own profile up to date. You can do it entirely in the browser:
+
+1. Open your file in [`profiles/`](profiles/) and click the pencil icon (**Edit this file**).
+2. Sign in to GitHub if asked. If you are not a member of this repository, GitHub offers to fork it for you. Accept.
+3. Change the front matter (`name`, `post`, `photo`) or the biography below it.
+4. Click **Commit changes…** (or **Propose changes**), then **Create pull request**.
+5. When a MARC maintainer merges the pull request, the website rebuilds and your changes go live.
+
+To change your photo, first upload the new image to [`profiles/photos/`](profiles/photos/) (**Add file → Upload files**), then point `photo:` at it, for example `photo: ./photos/jane_doe.jpg`.
+
+Please don't change your `email` unless you have to: it is what links you to your projects and publications.
+
+New to MARC? Follow **Option A** below to add a new profile.
+
+## :file_folder: Where things go
+
+```text
+marc_people/
+├── profiles/              ← one Markdown file per person
+│   ├── Jane_Doe.md
+│   └── photos/            ← profile photos
+│       └── jane_doe.jpg
+└── scripts/validate-people.mjs
+```
+
+Markdown files outside `profiles/` are not picked up by the website, and the validator reports them.
+
+## :key: Linking keys: keep these exactly the same
+
+Two fields connect a profile to the rest of the website. Everything else (`post`, `photo`, biography) is safe to change at any time.
+
+| Field | Linked from | Purpose |
+|---|---|---|
+| `email` | `projectMembers` / `supervisors` in [marc_projects](https://github.com/pdnMARC/marc_projects) | Your unique identifier. Projects list their team by email, matched letter for letter, so write it in lower case and copy it rather than retyping it. Never shown on the website. |
+| `name` | `Authors` column of the MARC Publications sheet | Papers whose author list contains this full name appear on your profile. Keep it as it is written in your papers. |
+
+- **Changing your email:** update your profile *and* every project that lists the old address, and merge both together. Otherwise you drop off those project pages.
+- **Changing your name:** papers listed under the old form of your name stop appearing on your profile.
+- **The file name** is your page address (`Jane_Doe.md` → `/people/jane_doe/`). Renaming it breaks links shared elsewhere.
+
+Full guide: [pdnmarc.github.io/docs/profiles](https://pdnmarc.github.io/docs/profiles/)
+
 ## :sparkles: What you will add
 
 You will usually add:
-- one Markdown file for your profile
-- optionally one photo file inside `photos/`
+- one Markdown file for your profile inside `profiles/`
+- optionally one photo file inside `profiles/photos/`
 
 A typical profile file looks like this:
 
@@ -102,7 +146,7 @@ Here is an inline image:
 ![Lab photo](./photos/jane_doe.jpg)
 ```
 
-If you include an image in the content section, use a relative path to a file inside the repository. The image can be placed at any place inside the repo (You don't need to place it in the cover_images folder, in fact __don't__ place them there :sweat_smile: !)
+If you include an image in the content section, put it in `profiles/photos/` and use a path relative to your profile file, such as `./photos/jane_doe_lab.jpg`.
 
 
 Keep it reasonably simple and readable. Plain paragraphs are completely fine.
@@ -140,12 +184,12 @@ This is the easiest option if you do not want to use Git locally.
 ### 2. Create your profile file in the browser
 
 1. Open your fork on GitHub.
-2. In the repository root, click `Add file`.
+2. Open the `profiles/` folder, then click `Add file`.
 3. Choose `Create new file`.
 4. Name the file something clear, for example:
 
 ```text
-Jane_Doe.md
+profiles/Jane_Doe.md
 ```
 
 5. Paste your profile content.
@@ -168,7 +212,7 @@ Her interests include ...
 
 If you want a profile photo:
 
-1. Open the `photos/` folder in your fork.
+1. Open the `profiles/photos/` folder in your fork.
 2. Click `Add file`.
 3. Choose `Upload files`.
 4. Upload your image.
@@ -189,7 +233,7 @@ Notes:
 
 If you already have a profile and just want to update it:
 
-1. Open your existing `.md` file in your fork.
+1. Open your existing `.md` file in the `profiles/` folder of your fork.
 2. Click the pencil icon to edit it.
 3. Update the front matter or biography.
 4. Scroll down and commit the change to a new branch.
@@ -239,12 +283,12 @@ Use any clear branch name such as `add-jane-doe-profile`.
 
 ### 4. Add your profile file
 
-Create a new Markdown file in the repository root.
+Create a new Markdown file inside the `profiles/` folder.
 
 Example:
 
 ```text
-Jane_Doe.md
+profiles/Jane_Doe.md
 ```
 
 Add front matter at the top of the file.
@@ -281,7 +325,7 @@ Plain paragraphs are enough.
 
 If you want a profile photo:
 
-1. Put the image file inside the `photos/` folder.
+1. Put the image file inside the `profiles/photos/` folder.
 2. Reference it in the `photo` field.
 
 Example:
@@ -318,7 +362,7 @@ In practice, the flow is:
 
 ## :white_check_mark: Checklist before opening the pull request
 
-- Your Markdown file is in the repository root.
+- Your Markdown file is in the `profiles/` folder.
 - Your front matter includes `email`, `post`, and `name`.
 - Your `post` value matches one of the supported roles exactly.
 - Your `email` is the identifier you want the system to use going forward.
