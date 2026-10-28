@@ -3,6 +3,8 @@ email: dilshara.h@eng.pdn.ac.lk
 post: Research Assistant
 name: Dilshara Herath
 photo: ./photos/Dilshara_Herath.jpg
+status: past
+currentPosition: "PhD, Columbia University, USA"
 ---
 
 

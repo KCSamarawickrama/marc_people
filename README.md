@@ -63,6 +63,17 @@ otherNames:
 
 Full guide: [pdnmarc.github.io/docs/profiles](https://pdnmarc.github.io/docs/profiles/)
 
+## :wave: When you leave MARC
+
+Don't delete your profile. Add these two lines to its front matter instead:
+
+```yaml
+status: past
+currentPosition: "PhD, Example University, USA"
+```
+
+Your profile moves to **Past members** on the People page (with "Now: …" from `currentPosition`), and keeps all its links: your projects and publications stay on your profile, and you stay on those project pages, marked as a past member. Keep `post` as the role you held at MARC, and leave your lines in the project files. `currentPosition` is only allowed together with `status: past`.
+
 ## :sparkles: What you will add
 
 You will usually add:
@@ -175,6 +186,8 @@ The website currently validates each person entry with these fields:
 - `photo`: optional image path
 - `otherEmails`: optional list of other email addresses, used to match project teams
 - `otherNames`: optional list of other forms of your name, used to match publication authors
+- `status`: optional, `current` (default) or `past`
+- `currentPosition`: optional, past members only: where they are now, e.g. `"PhD, Columbia University, USA"`
 
 The website also renders your Markdown content as the biography on your profile page.
 
@@ -319,6 +332,8 @@ Optional fields:
 - `photo`
 - `otherEmails`
 - `otherNames`
+- `status`
+- `currentPosition`
 
 Example:
 
