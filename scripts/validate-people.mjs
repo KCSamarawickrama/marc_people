@@ -19,8 +19,24 @@ const frontmatterSchema = z
     post: z.enum(allowedRoles),
     name: z.string().trim().min(1),
     photo: z.string().trim().min(1).optional(),
+    // Optional aliases the website also links by: extra addresses that project files may use,
+    // and other forms of the name used in publication author lists (e.g. "Ratnayake, A.").
+    otherEmails: z.array(z.string().email()).optional(),
+    otherNames: z.array(z.string().trim().min(1)).optional(),
   })
   .strict();
+
+// Same normalisation as the website (src/lib/people.ts): lower case, no leading title,
+// full stops as spaces, ", " after commas, single spaces.
+const normName = (name) =>
+  name
+    .toLowerCase()
+    .replace(/^\s*(prof|dr|mr|ms|mrs|eng|ir)\.?\s+/, "")
+    .replace(/\./g, " ")
+    .replace(/\s*,\s*/g, ", ")
+    .replace(/\s+/g, " ")
+    .replace(/[\s,]+$/, "")
+    .trim();
 
 const isMarkdown = (entry) =>
   entry.isFile() &&
@@ -44,6 +60,7 @@ for (const fileName of misplacedFiles) {
   failures.push(`${fileName}: move this file into the profiles/ folder`);
 }
 const seenEmails = new Map();
+const seenNames = new Map();
 
 for (const fileName of markdownFiles) {
   const filePath = path.join(contentDir, fileName);
@@ -69,14 +86,34 @@ for (const fileName of markdownFiles) {
   }
 
   const data = result.data;
-  const normalizedEmail = data.email.toLowerCase();
 
-  if (seenEmails.has(normalizedEmail)) {
-    failures.push(
-      `${fileName}: duplicate email "${data.email}" also used in ${seenEmails.get(normalizedEmail)}`,
-    );
-  } else {
-    seenEmails.set(normalizedEmail, fileName);
+  // Every address, primary or other, may belong to one profile only.
+  for (const email of [data.email, ...(data.otherEmails ?? [])]) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const owner = seenEmails.get(normalizedEmail);
+    if (owner && owner !== fileName) {
+      failures.push(`${fileName}: email "${email}" is also used in ${owner}`);
+    } else if (owner === fileName) {
+      failures.push(`${fileName}: email "${email}" is listed twice`);
+    } else {
+      seenEmails.set(normalizedEmail, fileName);
+    }
+  }
+
+  // A name form that matched two people would put papers on the wrong profile.
+  for (const name of new Set([data.name, ...(data.otherNames ?? [])].map(normName))) {
+    if (!name.includes(" ")) {
+      if (name !== normName(data.name)) {
+        failures.push(`${fileName}: otherNames entry "${name}" needs at least two words, e.g. "Ratnayake, A."`);
+      }
+      continue;
+    }
+    const owner = seenNames.get(name);
+    if (owner && owner !== fileName) {
+      failures.push(`${fileName}: name form "${name}" is also used in ${owner}; make it more specific`);
+    } else {
+      seenNames.set(name, fileName);
+    }
   }
 
   if (data.photo) {
